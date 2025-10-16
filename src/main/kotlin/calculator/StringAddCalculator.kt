@@ -8,7 +8,6 @@ class StringAddCalculator {
         }
 
         var delimiters = listOf(",", ":")
-
         var numbersPart = input
 
         if (input.startsWith("//")) {
@@ -16,7 +15,6 @@ class StringAddCalculator {
             if (parts.size < 2) {
                 throw IllegalArgumentException("커스텀 구분자 형식이 잘못되었습니다.")
             }
-
             val customDelimiter = parts[0].substring(2)
             delimiters = delimiters + customDelimiter
             numbersPart = parts[1]
@@ -25,6 +23,13 @@ class StringAddCalculator {
         val regex = delimiters.joinToString("|") { Regex.escape(it) }.toRegex()
         val numbers = numbersPart.split(regex)
 
-        return numbers.sumOf { it.toInt() }
+        return numbers.sumOf { str ->
+            val num = str.toIntOrNull()
+                ?: throw IllegalArgumentException("숫자가 아닙니다: '$str'")
+
+            require(num >= 0) { "음수는 허용되지 않습니다: $num" }
+
+            num
+        }
     }
 }
