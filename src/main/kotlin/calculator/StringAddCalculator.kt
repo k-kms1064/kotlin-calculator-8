@@ -5,11 +5,13 @@ class StringAddCalculator {
     fun calculate(input: String?): Int {
         if (input.isNullOrBlank()) return 0
 
-        var delimiters = listOf(",", ":")
-        var numbersPart = input
+        val normalizedInput = input.replace("\\n", "\n")
 
-        val customPattern = Regex("//(.)\n(.*)")
-        val matchResult = customPattern.matchEntire(input)
+        var delimiters = listOf(",", ":")
+        var numbersPart = normalizedInput
+
+        val customPattern = Regex("//(.)\\r?\\n(.*)")
+        val matchResult = customPattern.find(normalizedInput)
         if (matchResult != null) {
             val (customDelimiter, numbers) = matchResult.destructured
             delimiters = delimiters + customDelimiter
