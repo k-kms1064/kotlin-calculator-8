@@ -7,7 +7,7 @@ class StringAddCalculator {
             return 0
         }
 
-        val numbers = input.split(",")
+        val numbers = input.split(",", ":")
 
         return numbers.sumOf { it.toInt() }
     }
