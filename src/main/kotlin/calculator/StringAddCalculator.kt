@@ -3,32 +3,26 @@ package calculator
 class StringAddCalculator {
 
     fun calculate(input: String?): Int {
-        if (input.isNullOrBlank()) {
-            return 0
-        }
+        if (input.isNullOrBlank()) return 0
 
         var delimiters = listOf(",", ":")
         var numbersPart = input
 
-        if (input.startsWith("//")) {
-            val parts = input.split("\n", limit = 2)
-            if (parts.size < 2) {
-                throw IllegalArgumentException("커스텀 구분자 형식이 잘못되었습니다.")
-            }
-            val customDelimiter = parts[0].substring(2)
+        val customPattern = Regex("//(.)\n(.*)")
+        val matchResult = customPattern.matchEntire(input)
+        if (matchResult != null) {
+            val (customDelimiter, numbers) = matchResult.destructured
             delimiters = delimiters + customDelimiter
-            numbersPart = parts[1]
+            numbersPart = numbers
         }
 
         val regex = delimiters.joinToString("|") { Regex.escape(it) }.toRegex()
-        val numbers = numbersPart.split(regex)
+        val numbers = numbersPart.split(regex).filter { it.isNotBlank() }
 
         return numbers.sumOf { str ->
             val num = str.toIntOrNull()
                 ?: throw IllegalArgumentException("숫자가 아닙니다: '$str'")
-
             require(num >= 0) { "음수는 허용되지 않습니다: $num" }
-
             num
         }
     }
